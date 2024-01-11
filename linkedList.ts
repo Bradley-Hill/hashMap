@@ -12,7 +12,7 @@ export function createNode(content: string, nextNode: node | null): node {
 
 interface linkedList {
   head: null | node;
-  appendValue(this: linkedList, value: string): node;
+  appendValue(value: string): node;
 }
 
 export function createLinkedList(): linkedList {
