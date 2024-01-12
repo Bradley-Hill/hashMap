@@ -10,5 +10,6 @@ export function stringToNumber(key: string): number {
 }
 
 export function hash(key: string): number {
-  return stringToNumber(key);
+  let hashCode = stringToNumber(key);
+  return hashCode % 16;
 }
