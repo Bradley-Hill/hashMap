@@ -1,5 +1,5 @@
 import { hash } from "./hashFunction";
-import { createNode, createLinkedList, linkedList } from "./linkedList";
+import { createLinkedList, linkedList } from "./linkedList";
 
 //TOUSE----When accessing a bucket through an index, to artificially limit the number of array indexs in use
 // if (index < 0 || index >= buckets.length) {
@@ -15,6 +15,7 @@ interface hashMap {
 
 function createHashMap(): hashMap {
   let buckets = new Array(16).fill(null).map(() => createLinkedList());
+  let size = 0;
 
   return {
     hash,
@@ -25,6 +26,25 @@ function createHashMap(): hashMap {
       }
       let bucketLinkedList = buckets[index];
       bucketLinkedList.appendValue(value);
+      size++;
+
+      //Rehash if load factor > 0.75
+      if (size / buckets.length) {
+        let newBuckets = new Array(buckets.length * 2)
+          .fill(null)
+          .map(() => createLinkedList());
+        for (let i = 0; i < buckets.length; i++) {
+          let currentNode = buckets[i].head;
+          while (currentNode !== null) {
+            if (currentNode.content !== null) {
+              let newIndex = this.hash(currentNode.content) % newBuckets.length;
+              newBuckets[newIndex].appendValue(currentNode.content);
+              currentNode = currentNode.nextNode;
+            }
+          }
+          buckets = newBuckets;
+        }
+      }
     },
     buckets,
     logBucketValues(bucketIndex: number) {
