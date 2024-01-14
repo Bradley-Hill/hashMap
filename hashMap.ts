@@ -28,7 +28,8 @@ function createHashMap(): hashMap {
         let currentNode = buckets[i].head;
         while (currentNode !== null) {
           if (currentNode.content !== null) {
-            let newIndex = this.hash(currentNode.content) % newBuckets.length;
+            let newIndex =
+              this.hash(currentNode.content.key) % newBuckets.length;
             newBuckets[newIndex].appendValue(currentNode.content);
             currentNode = currentNode.nextNode;
           }
@@ -43,10 +44,14 @@ function createHashMap(): hashMap {
       }
       let bucketLinkedList = buckets[index];
       let currentNode = bucketLinkedList.head;
-      while(currentNode !== null){
-        if (currentNode.content.key === key)
+      while (currentNode !== null) {
+        if (currentNode.content?.key === key) {
+          currentNode.content.value = value;
+          return;
+        }
+        currentNode = currentNode.nextNode;
       }
-      bucketLinkedList.appendValue(value);
+      bucketLinkedList.appendValue({ key, value });
       size++;
 
       //Rehash if load factor > 0.75
@@ -56,9 +61,12 @@ function createHashMap(): hashMap {
     },
     buckets,
     logBucketValues(bucketIndex: number) {
-      let currentNode = this.buckets[bucketIndex].head;
+      let bucketLinkedList = this.buckets[bucketIndex];
+      let currentNode = bucketLinkedList.head;
       while (currentNode !== null) {
-        console.log(currentNode.content);
+        console.log(
+          `Key: ${currentNode.content?.key}, Value: ${currentNode.content?.value}`
+        );
         currentNode = currentNode.nextNode;
       }
     },
@@ -76,13 +84,24 @@ hashMap.set("key3", "Omegatron");
 hashMap.set("key656", "RandyMarsh");
 
 // Log the hash values of the keys
-console.log(hashMap.hash("key1"));
-console.log(hashMap.hash("key2"));
-console.log(hashMap.hash("key3"));
-console.log(hashMap.hash("key656"));
+console.log("Hash of key1:", hashMap.hash("key1"));
+console.log("Hash of key2:", hashMap.hash("key2"));
+console.log("Hash of key3:", hashMap.hash("key3"));
+console.log("Hash of key656:", hashMap.hash("key656"));
 
 //Log the contents of bucket/linkedlist "key3"
-hashMap.logBucketValues(4);
+console.log("Contents of bucket for key3:");
+hashMap.logBucketValues(hashMap.hash("key3") % hashMap.buckets.length);
 
 // Log the entire buckets array
-console.log(hashMap.buckets);
+console.log("Entire buckets array:");
+hashMap.buckets.forEach((bucket, index) => {
+  console.log(`Bucket ${index}:`);
+  let currentNode = bucket.head;
+  while (currentNode !== null) {
+    console.log(
+      ` Key: ${currentNode.content?.key}, Value: ${currentNode.content?.value}`
+    );
+    currentNode = currentNode.nextNode;
+  }
+});

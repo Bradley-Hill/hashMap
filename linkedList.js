@@ -4,8 +4,8 @@ exports.createLinkedList = exports.createNode = void 0;
 function createNode(content, nextNode) {
     //factory for nodes of linked-list
     return {
-        content,
-        nextNode,
+        content: content,
+        nextNode: nextNode,
     };
 }
 exports.createNode = createNode;
@@ -88,13 +88,14 @@ function createLinkedList() {
             }
         },
         contains(value) {
+            var _a;
             if (this.size() === 0) {
                 return false;
             }
             else {
                 let currentNode = this.head;
                 while (currentNode !== null) {
-                    if (currentNode.content === value) {
+                    if (((_a = currentNode.content) === null || _a === void 0 ? void 0 : _a.key) === value.key) {
                         return true;
                     }
                     else {
@@ -105,13 +106,14 @@ function createLinkedList() {
             return false;
         },
         find(value) {
+            var _a;
             if (this.head === null) {
                 return null;
             }
             else {
                 let currentIndex = 0;
                 let currentNode = this.head;
-                while (currentNode !== null && currentNode.content !== value) {
+                while (currentNode !== null && ((_a = currentNode.content) === null || _a === void 0 ? void 0 : _a.key) !== value.key) {
                     currentIndex++;
                     currentNode = currentNode.nextNode;
                 }
@@ -119,6 +121,7 @@ function createLinkedList() {
             }
         },
         toString() {
+            var _a, _b;
             if (this.size() === 0) {
                 return "Empty List";
             }
@@ -126,7 +129,7 @@ function createLinkedList() {
                 let string = "(";
                 let currentNode = this.head;
                 while (currentNode !== null) {
-                    string += currentNode.content;
+                    string += `${(_a = currentNode.content) === null || _a === void 0 ? void 0 : _a.key}:${(_b = currentNode.content) === null || _b === void 0 ? void 0 : _b.value}`;
                     if (currentNode.nextNode !== null) {
                         string += ") -> (";
                     }
@@ -177,10 +180,7 @@ function createLinkedList() {
                 currentIndex++;
             }
             if (index === 0) {
-                this.head =
-                    this.head !== undefined && this.head !== null
-                        ? this.head.nextNode
-                        : null;
+                this.head = this.head !== null ? this.head.nextNode : null;
             }
             else if (previousNode !== null && currentNode !== null) {
                 if (currentNode.nextNode !== undefined) {

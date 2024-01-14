@@ -4,21 +4,54 @@ const hashFunction_1 = require("./hashFunction");
 const linkedList_1 = require("./linkedList");
 function createHashMap() {
     let buckets = new Array(16).fill(null).map(() => (0, linkedList_1.createLinkedList)());
+    let size = 0;
     return {
         hash: hashFunction_1.hash,
+        rehash() {
+            let newBuckets = new Array(buckets.length * 2)
+                .fill(null)
+                .map(() => (0, linkedList_1.createLinkedList)());
+            for (let i = 0; i < buckets.length; i++) {
+                let currentNode = buckets[i].head;
+                while (currentNode !== null) {
+                    if (currentNode.content !== null) {
+                        let newIndex = this.hash(currentNode.content.key) % newBuckets.length;
+                        newBuckets[newIndex].appendValue(currentNode.content);
+                        currentNode = currentNode.nextNode;
+                    }
+                }
+            }
+            buckets = newBuckets;
+        },
         set(key, value) {
+            var _a;
             let index = this.hash(key);
             if (index < 0 || index >= buckets.length) {
                 throw new Error("Trying to access index out of bound");
             }
             let bucketLinkedList = buckets[index];
-            bucketLinkedList.appendValue(value);
+            let currentNode = bucketLinkedList.head;
+            while (currentNode !== null) {
+                if (((_a = currentNode.content) === null || _a === void 0 ? void 0 : _a.key) === key) {
+                    currentNode.content.value = value;
+                    return;
+                }
+                currentNode = currentNode.nextNode;
+            }
+            bucketLinkedList.appendValue({ key, value });
+            size++;
+            //Rehash if load factor > 0.75
+            if (size / buckets.length > 0.75) {
+                this.rehash();
+            }
         },
         buckets,
         logBucketValues(bucketIndex) {
-            let currentNode = this.buckets[bucketIndex].head;
+            var _a, _b;
+            let bucketLinkedList = this.buckets[bucketIndex];
+            let currentNode = bucketLinkedList.head;
             while (currentNode !== null) {
-                console.log(currentNode.content);
+                console.log(`Key: ${(_a = currentNode.content) === null || _a === void 0 ? void 0 : _a.key}, Value: ${(_b = currentNode.content) === null || _b === void 0 ? void 0 : _b.value}`);
                 currentNode = currentNode.nextNode;
             }
         },
@@ -33,11 +66,21 @@ hashMap.set("key3", "value3");
 hashMap.set("key3", "Omegatron");
 hashMap.set("key656", "RandyMarsh");
 // Log the hash values of the keys
-console.log(hashMap.hash("key1"));
-console.log(hashMap.hash("key2"));
-console.log(hashMap.hash("key3"));
-console.log(hashMap.hash("key656"));
+console.log("Hash of key1:", hashMap.hash("key1"));
+console.log("Hash of key2:", hashMap.hash("key2"));
+console.log("Hash of key3:", hashMap.hash("key3"));
+console.log("Hash of key656:", hashMap.hash("key656"));
 //Log the contents of bucket/linkedlist "key3"
-hashMap.logBucketValues(4);
+console.log("Contents of bucket for key3:");
+hashMap.logBucketValues(hashMap.hash("key3") % hashMap.buckets.length);
 // Log the entire buckets array
-console.log(hashMap.buckets);
+console.log("Entire buckets array:");
+hashMap.buckets.forEach((bucket, index) => {
+    var _a, _b;
+    console.log(`Bucket ${index}:`);
+    let currentNode = bucket.head;
+    while (currentNode !== null) {
+        console.log(` Key: ${(_a = currentNode.content) === null || _a === void 0 ? void 0 : _a.key}, Value: ${(_b = currentNode.content) === null || _b === void 0 ? void 0 : _b.value}`);
+        currentNode = currentNode.nextNode;
+    }
+});
