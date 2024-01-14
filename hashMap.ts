@@ -8,6 +8,7 @@ import { createLinkedList, linkedList } from "./linkedList";
 
 interface hashMap {
   hash(key: string): number;
+  rehash(): void;
   set(key: string, value: string): void;
   buckets: linkedList[];
   logBucketValues(bucketIndex: number): void;
@@ -15,10 +16,26 @@ interface hashMap {
 
 function createHashMap(): hashMap {
   let buckets = new Array(16).fill(null).map(() => createLinkedList());
-  let size = 0;
+  let size: number = 0;
 
   return {
     hash,
+    rehash() {
+      let newBuckets = new Array(buckets.length * 2)
+        .fill(null)
+        .map(() => createLinkedList());
+      for (let i = 0; i < buckets.length; i++) {
+        let currentNode = buckets[i].head;
+        while (currentNode !== null) {
+          if (currentNode.content !== null) {
+            let newIndex = this.hash(currentNode.content) % newBuckets.length;
+            newBuckets[newIndex].appendValue(currentNode.content);
+            currentNode = currentNode.nextNode;
+          }
+        }
+      }
+      buckets = newBuckets;
+    },
     set(key: string, value: string) {
       let index = this.hash(key);
       if (index < 0 || index >= buckets.length) {
@@ -29,21 +46,8 @@ function createHashMap(): hashMap {
       size++;
 
       //Rehash if load factor > 0.75
-      if (size / buckets.length) {
-        let newBuckets = new Array(buckets.length * 2)
-          .fill(null)
-          .map(() => createLinkedList());
-        for (let i = 0; i < buckets.length; i++) {
-          let currentNode = buckets[i].head;
-          while (currentNode !== null) {
-            if (currentNode.content !== null) {
-              let newIndex = this.hash(currentNode.content) % newBuckets.length;
-              newBuckets[newIndex].appendValue(currentNode.content);
-              currentNode = currentNode.nextNode;
-            }
-          }
-          buckets = newBuckets;
-        }
+      if (size / buckets.length > 0.75) {
+        this.rehash();
       }
     },
     buckets,
