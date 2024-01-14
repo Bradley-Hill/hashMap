@@ -1,30 +1,35 @@
+interface KeyValuePair {
+  key: string;
+  value: string;
+}
+
 interface node {
-  content: null | string;
+  content: null | KeyValuePair;
   nextNode: null | node;
 }
 
-export function createNode(content: string, nextNode: node | null) {
+export function createNode(content: KeyValuePair, nextNode: node | null) {
   //factory for nodes of linked-list
   return {
-    content,
-    nextNode,
+    content: content,
+    nextNode: nextNode,
   };
 }
 
 export interface linkedList {
   //
   head: null | node;
-  appendValue(value: string): node;
-  prependValue(value: string): node;
+  appendValue(value: KeyValuePair): node;
+  prependValue(value: KeyValuePair): node;
   size(): number;
   getHead(): null | node;
   getTail(): null | node;
   atIndex(index: number): null | node;
   pop(): null | node;
-  contains(value: string): boolean;
-  find(value: string): null | number;
+  contains(value: KeyValuePair): boolean;
+  find(value: KeyValuePair): null | number;
   toString(): string | void;
-  insertAt(value: string, index: number): void;
+  insertAt(value: KeyValuePair, index: number): void;
   removeAt(index: number): void;
 }
 
@@ -32,7 +37,7 @@ export function createLinkedList(): linkedList {
   //
   return {
     head: null,
-    appendValue(value: string) {
+    appendValue(value: KeyValuePair) {
       let node = createNode(value, null);
       if (this.head === null) {
         this.head = node;
@@ -45,7 +50,7 @@ export function createLinkedList(): linkedList {
       }
       return node;
     },
-    prependValue(value: string) {
+    prependValue(value: KeyValuePair) {
       let node = createNode(value, this.head);
       this.head = node;
       return node;
@@ -102,13 +107,13 @@ export function createLinkedList(): linkedList {
         return currentNode;
       }
     },
-    contains(value: string): boolean {
+    contains(value: KeyValuePair): boolean {
       if (this.size() === 0) {
         return false;
       } else {
         let currentNode = this.head;
         while (currentNode !== null) {
-          if (currentNode.content === value) {
+          if (currentNode.content?.key === value.key) {
             return true;
           } else {
             currentNode = currentNode.nextNode;
@@ -117,13 +122,13 @@ export function createLinkedList(): linkedList {
       }
       return false;
     },
-    find(value: string): null | number {
+    find(value: KeyValuePair): null | number {
       if (this.head === null) {
         return null;
       } else {
         let currentIndex = 0;
         let currentNode: null | node = this.head;
-        while (currentNode !== null && currentNode.content !== value) {
+        while (currentNode !== null && currentNode.content?.key !== value.key) {
           currentIndex++;
           currentNode = currentNode.nextNode;
         }
@@ -137,7 +142,7 @@ export function createLinkedList(): linkedList {
         let string = "(";
         let currentNode: null | node = this.head;
         while (currentNode !== null) {
-          string += currentNode.content;
+          string += `${currentNode.content?.key}:${currentNode.content?.value}`;
           if (currentNode.nextNode !== null) {
             string += ") -> (";
           }
@@ -147,7 +152,7 @@ export function createLinkedList(): linkedList {
         return string;
       }
     },
-    insertAt(value: string, index: number) {
+    insertAt(value: KeyValuePair, index: number): void {
       let node = createNode(value, null);
 
       if (index < 0 || index > this.size()) {
@@ -191,10 +196,7 @@ export function createLinkedList(): linkedList {
       }
 
       if (index === 0) {
-        this.head =
-          this.head !== undefined && this.head !== null
-            ? this.head.nextNode
-            : null;
+        this.head = this.head !== null ? this.head.nextNode : null;
       } else if (previousNode !== null && currentNode !== null) {
         if (currentNode.nextNode !== undefined) {
           previousNode.nextNode = currentNode.nextNode;

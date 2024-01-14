@@ -42,6 +42,10 @@ function createHashMap(): hashMap {
         throw new Error("Trying to access index out of bound");
       }
       let bucketLinkedList = buckets[index];
+      let currentNode = bucketLinkedList.head;
+      while(currentNode !== null){
+        if (currentNode.content.key === key)
+      }
       bucketLinkedList.appendValue(value);
       size++;
 
