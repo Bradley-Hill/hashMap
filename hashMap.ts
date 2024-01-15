@@ -132,6 +132,9 @@ let getTestTwo = hashMap.get("key656");
 console.log(getTestOne);
 console.log(getTestTwo);
 
+// Test has method
+console.log(hashMap.has("key657"));
+
 //Log the contents of bucket/linkedlist "key3"
 console.log("Contents of bucket for key3:");
 hashMap.logBucketValues(hashMap.hash("key3") % hashMap.buckets.length);
