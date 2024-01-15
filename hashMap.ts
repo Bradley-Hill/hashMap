@@ -1,5 +1,6 @@
+import { Node } from "typescript";
 import { hash } from "./hashFunction";
-import { createLinkedList, linkedList } from "./linkedList";
+import { createLinkedList, linkedList, node } from "./linkedList";
 
 //TOUSE----When accessing a bucket through an index, to artificially limit the number of array indexs in use
 // if (index < 0 || index >= buckets.length) {
@@ -9,7 +10,9 @@ import { createLinkedList, linkedList } from "./linkedList";
 interface hashMap {
   hash(key: string): number;
   rehash(): void;
+  findNode(key: string, bucket: linkedList): node | null;
   set(key: string, value: string): void;
+  get(key: string): string | null;
   buckets: linkedList[];
   logBucketValues(bucketIndex: number): void;
 }
@@ -37,27 +40,51 @@ function createHashMap(): hashMap {
       }
       buckets = newBuckets;
     },
+    findNode(key: string, bucket: linkedList) {
+      let bucketLinkedList = bucket;
+      let currentNode = bucketLinkedList.head;
+      while (currentNode !== null) {
+        if (currentNode.content?.key === key) {
+          return currentNode;
+        }
+        currentNode = currentNode.nextNode;
+      }
+      return null;
+    },
     set(key: string, value: string) {
       let index = this.hash(key);
       if (index < 0 || index >= buckets.length) {
         throw new Error("Trying to access index out of bound");
       }
       let bucketLinkedList = buckets[index];
-      let currentNode = bucketLinkedList.head;
-      while (currentNode !== null) {
-        if (currentNode.content?.key === key) {
-          currentNode.content.value = value;
-          return;
+      let node = this.findNode(key, bucketLinkedList);
+      if (node !== null) {
+        if (node.content !== null) {
+          node.content.value = value;
         }
-        currentNode = currentNode.nextNode;
+      } else {
+        bucketLinkedList.appendValue({ key, value });
+        size++;
       }
-      bucketLinkedList.appendValue({ key, value });
-      size++;
 
       //Rehash if load factor > 0.75
       if (size / buckets.length > 0.75) {
         this.rehash();
       }
+    },
+    get(key: string) {
+      let index = this.hash(key);
+      if (index < 0 || index >= buckets.length) {
+        throw new Error("Trying to access index out of bound");
+      }
+      let bucketLinkedList = buckets[index];
+      let node = this.findNode(key, bucketLinkedList);
+      if (node !== null) {
+        if (node.content !== null) {
+          return node.content.value;
+        }
+      }
+      return null;
     },
     buckets,
     logBucketValues(bucketIndex: number) {
@@ -88,6 +115,12 @@ console.log("Hash of key1:", hashMap.hash("key1"));
 console.log("Hash of key2:", hashMap.hash("key2"));
 console.log("Hash of key3:", hashMap.hash("key3"));
 console.log("Hash of key656:", hashMap.hash("key656"));
+
+//Get some values
+let getTestOne = hashMap.get("key3");
+let getTestTwo = hashMap.get("key656");
+console.log(getTestOne);
+console.log(getTestTwo);
 
 //Log the contents of bucket/linkedlist "key3"
 console.log("Contents of bucket for key3:");

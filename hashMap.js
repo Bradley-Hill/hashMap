@@ -45,6 +45,22 @@ function createHashMap() {
                 this.rehash();
             }
         },
+        get(key) {
+            var _a, _b;
+            let index = this.hash(key);
+            if (index < 0 || index >= buckets.length) {
+                throw new Error("Trying to access index out of bound");
+            }
+            let bucketLinkedList = buckets[index];
+            let currentNode = bucketLinkedList.head;
+            while (currentNode !== null) {
+                if (((_a = currentNode.content) === null || _a === void 0 ? void 0 : _a.key) === key) {
+                    return (_b = currentNode.content) === null || _b === void 0 ? void 0 : _b.value;
+                }
+                currentNode = currentNode.nextNode;
+            }
+            return null;
+        },
         buckets,
         logBucketValues(bucketIndex) {
             var _a, _b;
@@ -63,13 +79,18 @@ let hashMap = createHashMap();
 hashMap.set("key1", "value1");
 hashMap.set("key2", "value2");
 hashMap.set("key3", "value3");
-hashMap.set("key3", "Omegatron");
+// hashMap.set("key3", "Omegatron");
 hashMap.set("key656", "RandyMarsh");
 // Log the hash values of the keys
 console.log("Hash of key1:", hashMap.hash("key1"));
 console.log("Hash of key2:", hashMap.hash("key2"));
 console.log("Hash of key3:", hashMap.hash("key3"));
 console.log("Hash of key656:", hashMap.hash("key656"));
+//Get some values
+let getTestOne = hashMap.get("key3");
+let getTestTwo = hashMap.get("key656");
+console.log(getTestOne);
+console.log(getTestTwo);
 //Log the contents of bucket/linkedlist "key3"
 console.log("Contents of bucket for key3:");
 hashMap.logBucketValues(hashMap.hash("key3") % hashMap.buckets.length);

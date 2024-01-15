@@ -3,7 +3,7 @@ interface KeyValuePair {
   value: string;
 }
 
-interface node {
+export interface node {
   content: null | KeyValuePair;
   nextNode: null | node;
 }
