@@ -13,6 +13,7 @@ interface hashMap {
   findNode(key: string, bucket: linkedList): node | null;
   set(key: string, value: string): void;
   get(key: string): string | null;
+  has(key: string): boolean;
   buckets: linkedList[];
   logBucketValues(bucketIndex: number): void;
 }
@@ -85,6 +86,15 @@ function createHashMap(): hashMap {
         }
       }
       return null;
+    },
+    has(key: string) {
+      let index = this.hash(key);
+      if (index < 0 || index >= buckets.length) {
+        throw new Error("Trying to access index out of bound");
+      }
+      let bucketLinkedList = buckets[index];
+      let node = this.findNode(key, bucketLinkedList);
+      return node !== null;
     },
     buckets,
     logBucketValues(bucketIndex: number) {
