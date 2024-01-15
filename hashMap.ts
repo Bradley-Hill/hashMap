@@ -14,6 +14,7 @@ interface hashMap {
   set(key: string, value: string): void;
   get(key: string): string | null;
   has(key: string): boolean;
+  remove(key: string): boolean;
   buckets: linkedList[];
   logBucketValues(bucketIndex: number): void;
 }
@@ -95,6 +96,20 @@ function createHashMap(): hashMap {
       let bucketLinkedList = buckets[index];
       let node = this.findNode(key, bucketLinkedList);
       return node !== null;
+    },
+    remove(key: string): boolean {
+      let index = this.hash(key);
+      if (index < 0 || index >= buckets.length) {
+        throw new Error("Trying to access index out of bound");
+      }
+      let bucketLinkedList = buckets[index];
+      let nodeIndex = bucketLinkedList.find({ key: key, value: "" });
+      if (nodeIndex !== null) {
+        bucketLinkedList.removeAt(nodeIndex);
+        return true;
+      } else {
+        return false;
+      }
     },
     buckets,
     logBucketValues(bucketIndex: number) {
