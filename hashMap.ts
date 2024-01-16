@@ -26,7 +26,7 @@ interface hashMap {
 
 function createHashMap(): hashMap {
   let buckets = new Array(16).fill(null).map(() => createLinkedList());
-  let size: number = 0;
+  let _size: number = 0;
 
   return {
     hash,
@@ -71,11 +71,11 @@ function createHashMap(): hashMap {
         }
       } else {
         bucketLinkedList.appendValue({ key, value });
-        size++;
+        _size++;
       }
 
       //Rehash if load factor > 0.75
-      if (size / buckets.length > 0.75) {
+      if (_size / buckets.length > 0.75) {
         this.rehash();
       }
     },
@@ -117,21 +117,10 @@ function createHashMap(): hashMap {
       }
     },
     length() {
-      let length = 0;
-      this.buckets.forEach((bucket) => {
-        let currentNode = bucket.getHead();
-        while (currentNode !== null) {
-          length++;
-          currentNode = currentNode.nextNode;
-        }
-      });
-      return length;
+      return _size;
     },
     clear() {
-      this.buckets.forEach((bucket, index) => {
-        while (bucket.getHead() !== null) {
-          bucket.pop();
-        }
+      this.buckets.forEach((_, index) => {
         this.buckets[index] = createLinkedList();
       });
     },
