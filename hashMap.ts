@@ -16,6 +16,7 @@ interface hashMap {
   has(key: string): boolean;
   remove(key: string): boolean;
   length(): number;
+  clear(): void;
   buckets: linkedList[];
   logBucketValues(bucketIndex: number): void;
 }
@@ -122,6 +123,14 @@ function createHashMap(): hashMap {
         }
       });
       return length;
+    },
+    clear() {
+      this.buckets.forEach((bucket, index) => {
+        while (bucket.getHead() !== null) {
+          bucket.pop();
+        }
+        this.buckets[index] = createLinkedList();
+      });
     },
     buckets,
     logBucketValues(bucketIndex: number) {
