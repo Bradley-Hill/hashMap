@@ -178,45 +178,49 @@ function createHashMap(): hashMap {
     },
   };
 }
-
 // Create a new hash map
 let hashMap = createHashMap();
+console.log("Created a new hash map.");
 
 // Set some values
-hashMap.set("key1", "value1");
-hashMap.set("key2", "value2");
-hashMap.set("key3", "value3");
-hashMap.set("key3", "Omegatron");
-hashMap.set("key656", "RandyMarsh");
+hashMap.set("Rupert", "Oranges");
+hashMap.set("Cornelius", "Apples");
+hashMap.set("Omegatron", "Pears");
+hashMap.set("OptimusPrime", "Strawberries");
+console.log("Set some values in the hash map.");
 
 // Log the hash values of the keys
-console.log("Hash of key1:", hashMap.hash("key1"));
-console.log("Hash of key2:", hashMap.hash("key2"));
-console.log("Hash of key3:", hashMap.hash("key3"));
-console.log("Hash of key656:", hashMap.hash("key656"));
+console.log("Hash of Rupert:", hashMap.hash("Rupert"));
+console.log("Hash of Cornelius:", hashMap.hash("Cornelius"));
+console.log("Hash of Omegatron:", hashMap.hash("Omegatron"));
+console.log("Hash of OptimusPrime:", hashMap.hash("OptimusPrime"));
 
-//Get some values
-let getTestOne = hashMap.get("key3");
-let getTestTwo = hashMap.get("key656");
-console.log(getTestOne);
-console.log(getTestTwo);
+// Get some values
+console.log("Value of Rupert:", hashMap.get("Rupert"));
+console.log("Value of Cornelius:", hashMap.get("Cornelius"));
+console.log("Value of Omegatron:", hashMap.get("Omegatron"));
+console.log("Value of OptimusPrime:", hashMap.get("OptimusPrime"));
 
 // Test has method
-console.log(hashMap.has("key657"));
+console.log("Does the hash map have Rupert?", hashMap.has("Rupert"));
+console.log("Does the hash map have Jack?", hashMap.has("Jack"));
 
-//Log the contents of bucket/linkedlist "key3"
-console.log("Contents of bucket for key3:");
-hashMap.logBucketValues(hashMap.hash("key3") % hashMap.buckets.length);
+// Test remove method
+console.log("Removing Rupert from the hash map:", hashMap.remove("Rupert"));
+console.log("Does the hash map still have Rupert?", hashMap.has("Rupert"));
 
-// Log the entire buckets array
-console.log("Entire buckets array:");
-hashMap.buckets.forEach((bucket, index) => {
-  console.log(`Bucket ${index}:`);
-  let currentNode = bucket.head;
-  while (currentNode !== null) {
-    console.log(
-      ` Key: ${currentNode.content?.key}, Value: ${currentNode.content?.value}`
-    );
-    currentNode = currentNode.nextNode;
-  }
-});
+// Test length method
+console.log("Length of the hash map:", hashMap.length());
+
+// Test clear method
+hashMap.clear();
+console.log("Cleared the hash map.");
+console.log("Length of the hash map after clearing:", hashMap.length());
+
+// Test keys, values, and entries methods
+hashMap.set("Rupert", "Oranges");
+hashMap.set("Cornelius", "Apples");
+console.log("Set some values in the hash map again.");
+console.log("Keys in the hash map:", hashMap.keys());
+console.log("Values in the hash map:", hashMap.values());
+console.log("Entries in the hash map:", hashMap.entries());
