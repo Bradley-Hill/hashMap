@@ -50,3 +50,35 @@ You can install TypeScript globally with npm:
 ```bash
 npm install -g typescript
 ```
+
+Then, you can compile the TypeScript files to JavaScript with the `tsc` command:
+
+```bash
+tsc filename.ts
+```
+
+This will create a JavaScript file with the same name that you can run with Node.js or in the browser.
+
+## Running the Hash Map
+
+To run the hash map and see the suite of console logs verifying the methods work as expected, follow these steps:
+
+1. Compile the TypeScript file to JavaScript with the `tsc` command:
+
+```bash
+tsc hashMap.ts
+```
+
+This will create a JavaScript file named `hashMap.js`.
+
+2. Run the JavaScript file with Node.js:
+
+```bash
+node hashMap.js
+```
+
+This will execute the code in the `hashMap.js` file and print the console logs to the terminal.
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
