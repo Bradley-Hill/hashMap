@@ -18,6 +18,7 @@ interface hashMap {
   length(): number;
   clear(): void;
   keys(): string[];
+  values(): string[];
   buckets: linkedList[];
   logBucketValues(bucketIndex: number): void;
 }
@@ -145,6 +146,19 @@ function createHashMap(): hashMap {
         }
       });
       return keyArray;
+    },
+    values() {
+      const valueArray: string[] = [];
+      this.buckets.forEach((bucket) => {
+        let currentNode = bucket.head;
+        while (currentNode !== null) {
+          if (currentNode.content !== null) {
+            valueArray.push(currentNode.content.value);
+          }
+          currentNode = currentNode.nextNode;
+        }
+      });
+      return valueArray;
     },
     buckets,
     logBucketValues(bucketIndex: number) {
